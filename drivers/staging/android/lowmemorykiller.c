@@ -76,7 +76,6 @@ static bool kill_one_more;
 			pr_info(x);			\
 	} while (0)
 
-
 static bool test_tsk_lmk_waiting(struct task_struct *p)
 {
 	struct task_struct *t;
