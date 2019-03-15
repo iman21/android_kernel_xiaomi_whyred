@@ -578,11 +578,11 @@ void ion_pages_sync_for_device(struct device *dev, struct page *page,
 		size_t size, enum dma_data_direction dir);
 
 int ion_walk_heaps(struct ion_client *client, int heap_id,
-			enum ion_heap_type type, void *data,
-			int (*f)(struct ion_heap *heap, void *data));
+		   enum ion_heap_type type, void *data,
+		   int (*f)(struct ion_heap *heap, void *data));
 
-struct ion_handle *ion_handle_get_by_id_nolock(struct ion_client *client,
-					       int id);
+struct ion_handle *ion_handle_get_by_id(struct ion_client *client,
+					int id);
 
 int ion_handle_put(struct ion_handle *handle);
 
