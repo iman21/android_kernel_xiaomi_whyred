@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [ "$1" == "-p" ]; then
-	echo "Build for Pie firmware"
-	git apply ./pie_firmware.patch || exit 1
-else
+if [ "$1" == "-o" ]; then
 	echo "Build for Oreo firmware"
+	git apply ./oreo_firmware.patch || exit 1
+else
+	echo "Build for Pie firmware"
 fi
 
 yellow='\033[0;33m'
@@ -44,6 +44,6 @@ else
 	echo -e "$red << Failed to compile zImage, fix the errors first >>$white"
 fi
 
-if [ "$1" == "-p" ]; then
-	git apply -R ./pie_firmware.patch || exit 1
+if [ "$1" == "-o" ]; then
+	git apply -R ./oreo_firmware.patch || exit 1
 fi
