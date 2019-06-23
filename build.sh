@@ -13,7 +13,7 @@ red='\033[0;31m'
 gre='\e[0;32m'
 ZIMG=./out/arch/arm64/boot/Image.gz-dtb
 
-export LOCALVERSION=-v1.3
+export LOCALVERSION=-v1.4
 
 rm -f $ZIMG
 Start=$(date +"%s")
