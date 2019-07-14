@@ -1,6 +1,5 @@
 /* Copyright (c) 2012-2019, The Linux Foundation. All rights reserved.
  * Copyright (C) 2019 XiaoMi, Inc.
->>>>>>> 5a2d8f03c070722d6dfb114aa15314974738fa87
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
