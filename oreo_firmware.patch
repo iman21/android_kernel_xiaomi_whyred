@@ -27,15 +27,3 @@ index 62eccd585032..25643aa2826e 100644
  	/delete-node/ cti@7068000;
  	/delete-node/ turing_etm0;
  	funnel@6042000 {
-diff --git a/arch/arm/boot/dts/qcom/sdm636_e7t.dtsi b/arch/arm/boot/dts/qcom/sdm636_e7t.dtsi
-index ab86983aea19..8ad03941e084 100644
---- a/arch/arm/boot/dts/qcom/sdm636_e7t.dtsi
-+++ b/arch/arm/boot/dts/qcom/sdm636_e7t.dtsi
-@@ -32,7 +32,6 @@
- &soc {
- 	/delete-node/ qcom,turing@1a300000;
- 
--	/delete-node/ qcom,msm-cdsp-loader;
- 	/delete-node/ cti@7068000;
- 	/delete-node/ turing_etm0;
- 	funnel@6042000 {
