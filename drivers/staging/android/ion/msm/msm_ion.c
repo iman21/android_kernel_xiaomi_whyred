@@ -760,8 +760,8 @@ long msm_ion_custom_ioctl(struct ion_client *client,
 
 		lock_client(client);
 		if (data.flush_data.handle > 0) {
-			handle = ion_handle_get_by_id_nolock(
-					client, (int)data.flush_data.handle);
+			handle = ion_handle_get_by_id(client,
+						(int)data.flush_data.handle);
 			if (IS_ERR(handle)) {
 				pr_info("%s: Could not find handle: %d\n",
 					__func__, (int)data.flush_data.handle);
