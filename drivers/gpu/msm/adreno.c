@@ -55,7 +55,6 @@ MODULE_PARM_DESC(nopreempt, "Disable GPU preemption");
 #define NUM_TIMES_RESET_RETRY 5
 
 #define KGSL_LOG_LEVEL_DEFAULT 0
-__read_mostly bool suspended_once = false;
 
 static void adreno_pwr_on_work(struct work_struct *work);
 static unsigned int counter_delta(struct kgsl_device *device,
@@ -2488,7 +2487,7 @@ static unsigned int adreno_gpuid(struct kgsl_device *device,
 	 * that as a parameter */
 
 	if (chipid != NULL)
-		*chipid = 0x05010200; /* Fake report Adreno 512 */
+		*chipid = adreno_dev->chipid;
 
 	/* Standard KGSL gpuid format:
 	 * top word is 0x0002 for 2D or 0x0003 for 3D
@@ -2632,19 +2631,11 @@ static void adreno_gpu_model(struct kgsl_device *device, char *str,
 {
 	struct adreno_device *adreno_dev = ADRENO_DEVICE(device);
 
-	if (suspended_once) {
-		snprintf(str, bufsz, "Adreno%d%d%dv%d",
-				ADRENO_CHIPID_CORE(adreno_dev->chipid),
-				 ADRENO_CHIPID_MAJOR(adreno_dev->chipid),
-				 ADRENO_CHIPID_MINOR(adreno_dev->chipid),
-				 ADRENO_CHIPID_PATCH(adreno_dev->chipid) + 1);
-	} else {
-		snprintf(str, bufsz, "Adreno%d%d%dv%d",
-				ADRENO_CHIPID_CORE(0x05000900),
-				 ADRENO_CHIPID_MAJOR(0x05000900),
-				 ADRENO_CHIPID_MINOR(0x05000900),
-				 ADRENO_CHIPID_PATCH(0x05000900) + 1);
-	}
+	snprintf(str, bufsz, "Adreno%d%d%dv%d",
+			ADRENO_CHIPID_CORE(adreno_dev->chipid),
+			 ADRENO_CHIPID_MAJOR(adreno_dev->chipid),
+			 ADRENO_CHIPID_MINOR(adreno_dev->chipid),
+			 ADRENO_CHIPID_PATCH(adreno_dev->chipid) + 1);
 }
 
 static void adreno_suspend_device(struct kgsl_device *device,
@@ -2662,9 +2653,6 @@ static void adreno_suspend_device(struct kgsl_device *device,
 		(pm_event == PM_EVENT_HIBERNATE))
 		if (gpudev->zap_shader_unload != NULL)
 			gpudev->zap_shader_unload(adreno_dev);
-
-	if (!suspended_once)
-		suspended_once = true;
 }
 
 static void adreno_resume_device(struct kgsl_device *device)
