@@ -57,7 +57,7 @@ MODULE_PARM_DESC(nopreempt, "Disable GPU preemption");
 #define NUM_TIMES_RESET_RETRY 5
 
 #define KGSL_LOG_LEVEL_DEFAULT 0
-__read_mostly bool suspended_once = false;
+bool suspended_once = false;
 
 static void adreno_pwr_on_work(struct work_struct *work);
 static unsigned int counter_delta(struct kgsl_device *device,
