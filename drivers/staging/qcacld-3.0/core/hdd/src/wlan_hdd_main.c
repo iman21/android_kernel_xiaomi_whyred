@@ -6643,32 +6643,6 @@ out:
 }
 
 /**
- * hdd_rx_wake_lock_destroy() - Destroy RX wakelock
- * @hdd_ctx:	HDD context.
- *
- * Destroy RX wakelock.
- *
- * Return: None.
- */
-static void hdd_rx_wake_lock_destroy(hdd_context_t *hdd_ctx)
-{
-	qdf_wake_lock_destroy(&hdd_ctx->rx_wake_lock);
-}
-
-/**
- * hdd_rx_wake_lock_create() - Create RX wakelock
- * @hdd_ctx:	HDD context.
- *
- * Create RX wakelock.
- *
- * Return: None.
- */
-static void hdd_rx_wake_lock_create(hdd_context_t *hdd_ctx)
-{
-	qdf_wake_lock_create(&hdd_ctx->rx_wake_lock, "qcom_rx_wakelock");
-}
-
-/**
  * hdd_roc_context_init() - Init ROC context
  * @hdd_ctx:	HDD context.
  *
@@ -8270,9 +8244,6 @@ void hdd_unsafe_channel_restart_sap(hdd_context_t *hdd_ctxt)
 		}
 
 		if (!found) {
-			hdd_store_sap_restart_channel(
-				adapter_temp->sessionCtx.ap.operatingChannel,
-				restart_chan_store);
 			hdd_debug("ch:%d is safe. no need to change channel",
 				adapter_temp->sessionCtx.ap.operatingChannel);
 			goto next_adapater;
@@ -8313,9 +8284,6 @@ void hdd_unsafe_channel_restart_sap(hdd_context_t *hdd_ctxt)
 				hdd_ctxt->config->sap_internal_restart);
 			if (hdd_ctxt->config->sap_internal_restart) {
 				hdd_restart_sap(adapter_temp, restart_chan);
-				hdd_store_sap_restart_channel(
-							restart_chan,
-							restart_chan_store);
 			}
 			else
 				return;
