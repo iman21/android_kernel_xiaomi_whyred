@@ -45,8 +45,8 @@ make -j6 \
 	O=out \
 	CC="ccache $CLANG_PATH/bin/clang" \
 	CLANG_TRIPLE=aarch64-linux-gnu- \
-	CROSS_COMPILE=/home/pzqqt/bin/gcc-linaro-7.4.1-2019.02-rc1-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu- \
-	CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-linaro-7.4.1-2019.02-rc1-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-
+	CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
+	CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
 
 End=$(date +"%s")
 Diff=$(($End - $Start))
