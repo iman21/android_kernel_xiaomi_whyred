@@ -13,7 +13,7 @@ red='\033[0;31m'
 gre='\e[0;32m'
 ZIMG=./out/arch/arm64/boot/Image.gz-dtb
 
-export LOCALVERSION=-v2.5
+export LOCALVERSION=-v2.5.1
 export LOCALVERSION=${LOCALVERSION}-clang
 
 rm -f $ZIMG
