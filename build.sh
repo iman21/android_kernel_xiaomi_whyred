@@ -7,8 +7,6 @@ else
 	echo "Build for Pie firmware"
 fi
 
-[ "$1" == "--llvm" ] && use_llvm=true || use_llvm=false
-
 yellow='\033[0;33m'
 white='\033[0m'
 red='\033[0;31m'
@@ -16,11 +14,7 @@ gre='\e[0;32m'
 ZIMG=./out/arch/arm64/boot/Image.gz-dtb
 
 export LOCALVERSION=-v2.5
-if $use_llvm; then
-	export LOCALVERSION=${LOCALVERSION}-llvm
-else
-	export LOCALVERSION=${LOCALVERSION}-clang
-fi
+export LOCALVERSION=${LOCALVERSION}-clang
 
 rm -f $ZIMG
 Start=$(date +"%s")
@@ -28,19 +22,14 @@ Start=$(date +"%s")
 export ARCH=arm64
 export SUBARCH=arm64
 export HEADER_ARCH=arm64
-if $use_llvm; then
-	export CLANG_PATH=/home/pzqqt/bin/snapdragon-llvm-8.0.6-linux64/toolchains/llvm-Snapdragon_LLVM_for_Android_8.0/prebuilt/linux-x86_64
-else
-	export CLANG_PATH=/home/pzqqt/bin/android_prebuilts_clang_host_linux-x86_clang-5799447
-fi
+export CLANG_PATH=/home/pzqqt/bin/android_prebuilts_clang_host_linux-x86_clang-5799447
 export KBUILD_COMPILER_STRING=$($CLANG_PATH/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 
 export KBUILD_BUILD_HOST="lenovo"
 export KBUILD_BUILD_USER="pzqqt"
 
-make mrproper O=out
-make whyred-perf_defconfig O=out
-$use_llvm && set CONFIG_LLVM_POLLY=y
+make mrproper O=out && \
+make whyred-perf_defconfig O=out && \
 make -j6 \
 	O=out \
 	CC="ccache $CLANG_PATH/bin/clang" \
