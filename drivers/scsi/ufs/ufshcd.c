@@ -7992,6 +7992,7 @@ static inline int ufshcd_config_vreg_hpm(struct ufs_hba *hba,
 		return 0;
 	else
 		return ufshcd_config_vreg_load(hba->dev, vreg, vreg->max_uA);
+>>>>>>> 3edc5af3e74c297c6803bc84cbd3f7c81f3f78e6
 }
 
 static int ufshcd_config_vreg(struct device *dev,
