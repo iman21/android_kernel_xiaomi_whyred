@@ -1,11 +1,13 @@
 #!/bin/bash
 
 if [ "$1" == "-o" ]; then
-	echo "Build for Oreo firmware"
+	target_="Oreo"
 	git apply ./oreo_firmware.patch || exit 1
 else
-	echo "Build for Pie firmware"
+	target_="Pie"
 fi
+
+echo "Build for ${target_} firmware"
 
 yellow='\033[0;33m'
 white='\033[0m'
@@ -14,6 +16,7 @@ gre='\e[0;32m'
 ZIMG=./out/arch/arm64/boot/Image.gz-dtb
 
 export LOCALVERSION=-v2.5.1
+export LOCALVERSION="-"${target_}${LOCALVERSION}
 
 rm -f $ZIMG
 Start=$(date +"%s")
