@@ -142,13 +142,7 @@ EXPORT_SYMBOL(msm_ion_client_create);
 int msm_ion_do_cache_op(struct ion_client *client, struct ion_handle *handle,
 			void *vaddr, unsigned long len, unsigned int cmd)
 {
-	int ret;
-
-	lock_client(client);
-	ret = ion_do_cache_op(client, handle, vaddr, 0, len, cmd);
-	unlock_client(client);
-
-	return ret;
+	return ion_do_cache_op(client, handle, vaddr, 0, len, cmd);
 }
 EXPORT_SYMBOL(msm_ion_do_cache_op);
 
@@ -157,13 +151,7 @@ int msm_ion_do_cache_offset_op(
 		void *vaddr, unsigned int offset, unsigned long len,
 		unsigned int cmd)
 {
-	int ret;
-
-	lock_client(client);
-	ret = ion_do_cache_op(client, handle, vaddr, offset, len, cmd);
-	unlock_client(client);
-
-	return ret;
+	return ion_do_cache_op(client, handle, vaddr, offset, len, cmd);
 }
 EXPORT_SYMBOL(msm_ion_do_cache_offset_op);
 
@@ -294,10 +282,8 @@ static int ion_pages_cache_ops(struct ion_client *client,
 	int i;
 	unsigned int len = 0;
 	void (*op)(const void *, const void *);
-	struct ion_buffer *buffer;
 
-	buffer = get_buffer(handle);
-	table = buffer->sg_table;
+	table = ion_sg_table(client, handle);
 	if (IS_ERR_OR_NULL(table))
 		return PTR_ERR(table);
 
@@ -357,7 +343,7 @@ int ion_do_cache_op(struct ion_client *client, struct ion_handle *handle,
 	if (flags & ION_FLAG_SECURE)
 		return 0;
 
-	table = buffer->sg_table;
+	table = ion_sg_table(client, handle);
 
 	if (IS_ERR_OR_NULL(table))
 		return PTR_ERR(table);
