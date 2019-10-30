@@ -36,5 +36,6 @@ if [ -f $ZIMG ]; then
 	echo -e "$gre << Build completed in $(($Diff / 60)) minutes and $(($Diff % 60)) seconds >> \n $white"
 else
 	echo -e "$red << Failed to compile zImage, fix the errors first >>$white"
+	exit 1
 fi
 
