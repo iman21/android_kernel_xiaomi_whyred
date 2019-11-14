@@ -10,7 +10,6 @@ export LOCALVERSION=-v3.2
 export LOCALVERSION="-Q"${LOCALVERSION}
 
 rm -f $ZIMG
-Start=$(date +"%s")
 
 export ARCH=arm64
 export SUBARCH=arm64
@@ -22,27 +21,68 @@ export KBUILD_BUILD_HOST="lenovo"
 export KBUILD_BUILD_USER="pzqqt"
 
 make mrproper O=out && make whyred-perf_defconfig O=out || exit 1
-if [ "$1" == "dtbs" ]; then
+arg_1="$1"
+if [ "$arg_1" == "dtbs" ]; then
+
+	oc_flag=false
+	uv_flag=false
+
+	shift
+	arg_2="$1"
+	if [ "$arg_2" == "-oc" ]; then
+		oc_flag=true
+		git apply ./oc.patch || exit 1
+	elif [ "$arg_2" == "-uv" ]; then
+		uv_flag=true
+		git apply ./40mv_uv.patch || exit 1
+	fi
+
+	shift
+	arg_3="$1"
+	if [ "$arg_3" != "$arg_2" ]; then
+		if [ "$1" == "-oc" ]; then
+			oc_flag=true
+			git apply ./oc.patch || exit 1
+		elif [ "$1" == "-uv" ]; then
+			uv_flag=true
+			git apply ./40mv_uv.patch || exit 1
+		fi
+	fi
+
 	make dtbs \
 		O=out \
 		CC="ccache $CLANG_PATH/bin/clang" \
 		CLANG_TRIPLE=aarch64-linux-gnu- \
 		CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
 		CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
-	exit $?
+	exit_code=$?
+
+	$oc_flag && { git apply -R ./oc.patch || exit 1; }
+	$uv_flag && { git apply -R ./40mv_uv.patch || exit 1; }
+
+	if [ $exit_code -eq 0 ]; then
+		echo -e "$gre << Build completed >> \n $white"
+	else
+		echo -e "$red << Failed to compile dtbs, fix the errors first >>$white"
+		exit $exit_code
+	fi
 else
+	Start=$(date +"%s")
+
 	make -j6 \
 		O=out \
 		CC="ccache $CLANG_PATH/bin/clang" \
 		CLANG_TRIPLE=aarch64-linux-gnu- \
 		CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
 		CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
+
 	End=$(date +"%s")
 	Diff=$(($End - $Start))
+
 	if [ -f $ZIMG ]; then
 		echo -e "$gre << Build completed in $(($Diff / 60)) minutes and $(($Diff % 60)) seconds >> \n $white"
 	else
-		echo -e "$red << Failed to compile zImage, fix the errors first >>$white"
+		echo -e "$red << Failed to compile Image.gz-dtb, fix the errors first >>$white"
 		exit 1
 	fi
 fi
