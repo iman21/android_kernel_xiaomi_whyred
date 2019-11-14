@@ -1,0 +1,54 @@
+diff --git a/arch/arm/boot/dts/qcom/sdm660-regulator.dtsi b/arch/arm/boot/dts/qcom/sdm660-regulator.dtsi
+index b046f106d95c..9169671fbda3 100644
+--- a/arch/arm/boot/dts/qcom/sdm660-regulator.dtsi
++++ b/arch/arm/boot/dts/qcom/sdm660-regulator.dtsi
+@@ -597,11 +597,11 @@
+ 				qcom,cpr-corner-fmax-map = <1 2 3 4 5 6>;
+ 
+ 				qcom,cpr-voltage-ceiling =
+-					<565000  625000  705000  770000
+-					 850000  905000 1050000>;
++					<545000  605000  685000  750000
++					 830000  885000 1030000>;
+ 				qcom,cpr-voltage-floor =
+-					<484000  484000  576000  632000
+-					 692000  724000 1050000>;
++					<464000  464000  556000  612000
++					 672000  704000 1030000>;
+ 
+ 				qcom,mem-acc-voltage = <1 1 1 2 2 2 2>;
+ 				qcom,system-voltage =
+@@ -747,12 +747,12 @@
+ 					<2 3 4 5 8>;
+ 
+ 				qcom,cpr-voltage-ceiling =
+-					< 704000  704000  704000  768000  848000
+-					 1048000 1048000 1048000>;
++					< 684000  684000  684000  748000  828000
++					 1028000 1028000 1028000>;
+ 
+ 				qcom,cpr-voltage-floor =
+-					<568000  568000  576000  632000  692000
+-					 724000  764000  824000>;
++					<548000  548000  556000  612000  672000
++					 704000  744000  804000>;
+ 
+ 				qcom,corner-frequencies =
+ 					/* Speed bin 0 */
+@@ -898,12 +898,12 @@
+ 					<2 3 4 6 7>;
+ 
+ 				qcom,cpr-voltage-ceiling =
+-					<704000  704000  768000  848000
+-					 968000  968000 1048000>;
++					<684000  684000  748000  828000
++					 948000  948000 1028000>;
+ 
+ 				qcom,cpr-voltage-floor =
+-					<568000  576000  632000  692000
+-					 724000  764000  824000>;
++					<548000  556000  612000  672000
++					 704000  744000  804000>;
+ 
+ 				qcom,corner-frequencies =
+ 					/* Speed bin 0 */
