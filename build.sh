@@ -6,6 +6,27 @@ red='\033[0;31m'
 gre='\e[0;32m'
 ZIMG=./out/arch/arm64/boot/Image.gz-dtb
 
+disable_mkclean=false
+mkdtbs=false
+oc_flag=false
+uv_flag=false
+more_uv_flag=false
+
+for arg in $@; do
+	case $arg in
+		"--noclean") disable_mkclean=true;;
+		"--dtbs") mkdtbs=true;;
+		"-oc") oc_flag=true;;
+		"-40uv") uv_flag=true;;
+		"-80uv") more_uv_flag=true;;
+	esac
+done
+
+$uv_flag && $more_uv_flag && {
+	echo "Parameter -40uv and parameter -80uv cannot exist at the same time"
+	exit 1
+}
+
 export LOCALVERSION=-v3.6
 export LOCALVERSION="-Q"${LOCALVERSION}
 
@@ -20,46 +41,40 @@ export KBUILD_COMPILER_STRING=$($CLANG_PATH/bin/clang --version | head -n 1 | pe
 export KBUILD_BUILD_HOST="lenovo"
 export KBUILD_BUILD_USER="pzqqt"
 
-make mrproper O=out && make whyred-perf_defconfig O=out || exit 1
-arg_1="$1"
-if [ "$arg_1" == "dtbs" ]; then
+$oc_flag && { git apply ./oc.patch || exit 1; }
+$uv_flag && { git apply ./40mv_uv.patch || exit 1; }
+$more_uv_flag && { git apply ./80mv_uv.patch || exit 1; }
 
-	oc_flag=false
-	uv_flag=false
+$disable_mkclean || make mrproper O=out || exit 1
+make whyred-perf_defconfig O=out || exit 1
 
-	shift
-	arg_2="$1"
-	if [ "$arg_2" == "-oc" ]; then
-		oc_flag=true
-		git apply ./oc.patch || exit 1
-	elif [ "$arg_2" == "-uv" ]; then
-		uv_flag=true
-		git apply ./40mv_uv.patch || exit 1
-	fi
+Start=$(date +"%s")
 
-	shift
-	arg_3="$1"
-	if [ "$arg_3" != "$arg_2" ]; then
-		if [ "$1" == "-oc" ]; then
-			oc_flag=true
-			git apply ./oc.patch || exit 1
-		elif [ "$1" == "-uv" ]; then
-			uv_flag=true
-			git apply ./40mv_uv.patch || exit 1
-		fi
-	fi
-
+if $mkdtbs; then
 	make dtbs \
 		O=out \
 		CC="ccache $CLANG_PATH/bin/clang" \
 		CLANG_TRIPLE=aarch64-linux-gnu- \
 		CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
 		CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
-	exit_code=$?
+else
+	make -j6 \
+		O=out \
+		CC="ccache $CLANG_PATH/bin/clang" \
+		CLANG_TRIPLE=aarch64-linux-gnu- \
+		CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
+		CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
+fi
 
-	$oc_flag && { git apply -R ./oc.patch || exit 1; }
-	$uv_flag && { git apply -R ./40mv_uv.patch || exit 1; }
+exit_code=$?
+End=$(date +"%s")
+Diff=$(($End - $Start))
 
+$oc_flag && { git apply -R ./oc.patch || exit 1; }
+$uv_flag && { git apply -R ./40mv_uv.patch || exit 1; }
+$more_uv_flag && { git apply -R ./80mv_uv.patch || exit 1; }
+
+if $mkdtbs; then
 	if [ $exit_code -eq 0 ]; then
 		echo -e "$gre << Build completed >> \n $white"
 	else
@@ -67,22 +82,10 @@ if [ "$arg_1" == "dtbs" ]; then
 		exit $exit_code
 	fi
 else
-	Start=$(date +"%s")
-
-	make -j6 \
-		O=out \
-		CC="ccache $CLANG_PATH/bin/clang" \
-		CLANG_TRIPLE=aarch64-linux-gnu- \
-		CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
-		CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
-
-	End=$(date +"%s")
-	Diff=$(($End - $Start))
-
 	if [ -f $ZIMG ]; then
 		echo -e "$gre << Build completed in $(($Diff / 60)) minutes and $(($Diff % 60)) seconds >> \n $white"
 	else
 		echo -e "$red << Failed to compile Image.gz-dtb, fix the errors first >>$white"
-		exit 1
+		exit $exit_code
 	fi
 fi
