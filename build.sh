@@ -27,7 +27,7 @@ $uv_flag && $more_uv_flag && {
 	exit 1
 }
 
-export LOCALVERSION=-v3.6
+export LOCALVERSION=-v3.7
 export LOCALVERSION="-Q"${LOCALVERSION}
 
 rm -f $ZIMG
