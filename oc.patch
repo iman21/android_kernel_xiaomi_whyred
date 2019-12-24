@@ -47,110 +47,11 @@ index b046f106d95c..25756e669d59 100644
  					 2208000000>,
  
  					/* Speed bin 4 */
-diff --git a/arch/arm/boot/dts/qcom/sdm660-thermal.dtsi b/arch/arm/boot/dts/qcom/sdm660-thermal.dtsi
-index ff69ed741ab5..cb0f7f057981 100644
---- a/arch/arm/boot/dts/qcom/sdm660-thermal.dtsi
-+++ b/arch/arm/boot/dts/qcom/sdm660-thermal.dtsi
-@@ -21,44 +21,79 @@
- 		qcom,start-delay = <60>;
- 		zone@0 {
- 			reg = <0>;
--			qcom,silver-khz = <1612800>;
--			qcom,gold-khz = <1804800>;
-+			qcom,silver-khz = <1843200>;
-+			qcom,gold-khz = <2150400>;
- 			qcom,trip-deg = <39>;
- 		};
- 
- 		zone@1 {
- 			reg = <1>;
--			qcom,silver-khz = <1536000>;
--			qcom,gold-khz = <1804800>;
--			qcom,trip-deg = <45>;
-+			qcom,silver-khz = <1747200>;
-+			qcom,gold-khz = <2150400>;
-+			qcom,trip-deg = <41>;
- 		};
- 
- 		zone@2 {
- 			reg = <2>;
--			qcom,silver-khz = <1536000>;
--			qcom,gold-khz = <1747200>;
--			qcom,trip-deg = <48>;
-+			qcom,silver-khz = <1747200>;
-+			qcom,gold-khz = <1958400>;
-+			qcom,trip-deg = <43>;
- 		};
- 
- 		zone@3 {
- 			reg = <3>;
--			qcom,silver-khz = <1536000>;
--			qcom,gold-khz = <1401600>;
--			qcom,trip-deg = <54>;
-+			qcom,silver-khz = <1747200>;
-+			qcom,gold-khz = <1747200>;
-+			qcom,trip-deg = <45>;
- 		};
- 
- 		zone@4 {
- 			reg = <4>;
--			qcom,silver-khz = <1536000>;
--			qcom,gold-khz = <1113600>;
--			qcom,trip-deg = <56>;
-+			qcom,silver-khz = <1747200>;
-+			qcom,gold-khz = <1401600>;
-+			qcom,trip-deg = <47>;
- 		};
- 
- 		zone@5 {
- 			reg = <5>;
-+			qcom,silver-khz = <1536000>;
-+			qcom,gold-khz = <1401600>;
-+			qcom,trip-deg = <59>;
-+		};
-+
-+		zone@6 {
-+			reg = <6>;
-+			qcom,silver-khz = <1536000>;
-+			qcom,gold-khz = <1113600>;
-+			qcom,trip-deg = <53>;
-+		};
-+
-+		zone@7 {
-+			reg = <7>;
-+			qcom,silver-khz = <1401600>;
-+			qcom,gold-khz = <1113600>;
-+			qcom,trip-deg = <57>;
-+		};
-+
-+		zone@8 {
-+			reg = <8>;
- 			qcom,silver-khz = <1113600>;
- 			qcom,gold-khz = <1113600>;
--			qcom,trip-deg = <60>;
-+			qcom,trip-deg = <59>;
-+		};
-+
-+		zone@9 {
-+			reg = <9>;
-+			qcom,silver-khz = <902400>;
-+			qcom,gold-khz = <1113600>;
-+			qcom,trip-deg = <64>;
-+		};
-+
-+		zone@10 {
-+			reg = <10>;
-+			qcom,silver-khz = <633600>;
-+			qcom,gold-khz = <1113600>;
-+			qcom,trip-deg = <69>;
- 		};
- 	};
- };
 diff --git a/arch/arm/boot/dts/qcom/sdm660_e7s.dtsi b/arch/arm/boot/dts/qcom/sdm660_e7s.dtsi
-index aab653a6a3e0..133c8c4a4e67 100644
+index 7f9132a539d3..ed494e17879f 100644
 --- a/arch/arm/boot/dts/qcom/sdm660_e7s.dtsi
 +++ b/arch/arm/boot/dts/qcom/sdm660_e7s.dtsi
-@@ -1257,7 +1257,7 @@
+@@ -1256,7 +1256,7 @@
  		qcom,core-dev-table =
  			< 902400 762 >,
  			< 1401600 2086 >,
@@ -159,7 +60,7 @@ index aab653a6a3e0..133c8c4a4e67 100644
  	};
  
  	devfreq_memlat_4: qcom,arm-memlat-mon-4 {
-@@ -1268,7 +1268,7 @@
+@@ -1267,7 +1267,7 @@
  			< 1113600 762 >,
  			< 1401600 3879 >,
  			< 2150400 5931 >,
@@ -168,7 +69,7 @@ index aab653a6a3e0..133c8c4a4e67 100644
  	};
  
  	devfreq_cpufreq: devfreq-cpufreq {
-@@ -1277,13 +1277,13 @@
+@@ -1276,13 +1276,13 @@
  			cpu-to-dev-map-0 =
  				< 633600 762 >,
  				< 1401600 1571 >,
@@ -184,7 +85,7 @@ index aab653a6a3e0..133c8c4a4e67 100644
  		};
  	};
  
-@@ -1330,7 +1330,8 @@
+@@ -1329,7 +1329,8 @@
  			<  1113600000 0x0404003a 0x052e002e 0x2 4 >,
  			<  1401600000 0x04040049 0x073a003a 0x2 5 >,
  			<  1536000000 0x04040050 0x08400040 0x2 6 >,
@@ -194,7 +95,7 @@ index aab653a6a3e0..133c8c4a4e67 100644
  
  		qcom,pwrcl-speedbin4-v0 =
  			<   300000000 0x0004000f 0x01200020 0x1 1 >,
-@@ -1365,7 +1366,10 @@
+@@ -1364,7 +1365,10 @@
  			<  1113600000 0x0404003a 0x052e002e 0x1 2 >,
  			<  1401600000 0x04040049 0x073a003a 0x2 3 >,
  			<  1747200000 0x0404005b 0x09480048 0x2 4 >,
