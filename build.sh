@@ -37,11 +37,13 @@ rm -f $ZIMG
 export ARCH=arm64
 export SUBARCH=arm64
 export HEADER_ARCH=arm64
-export CLANG_PATH=/home/pzqqt/bin/android_prebuilts_clang_host_linux-x86_clang-10.0.1
+export CLANG_PATH=/home/pzqqt/build_toolchain/android_prebuilts_clang_host_linux-x86_clang-10.0.1
 export KBUILD_COMPILER_STRING=$($CLANG_PATH/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 
 export KBUILD_BUILD_HOST="lenovo"
 export KBUILD_BUILD_USER="pzqqt"
+
+ccache_=`which ccache`
 
 $oc_flag && { git apply ./oc.patch || exit 1; }
 $uv_flag && { git apply ./40mv_uv.patch || exit 1; }
@@ -56,17 +58,17 @@ Start=$(date +"%s")
 if $mkdtbs; then
 	make dtbs \
 		O=out \
-		CC="ccache $CLANG_PATH/bin/clang" \
+		CC="${ccache_} ${CLANG_PATH}/bin/clang" \
 		CLANG_TRIPLE=aarch64-linux-gnu- \
-		CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
-		CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
+		CROSS_COMPILE=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu- \
+		CROSS_COMPILE_ARM32=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
 else
 	make -j6 \
 		O=out \
-		CC="ccache $CLANG_PATH/bin/clang" \
+		CC="${ccache_} ${CLANG_PATH}/bin/clang" \
 		CLANG_TRIPLE=aarch64-linux-gnu- \
-		CROSS_COMPILE=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-linux-gnu- \
-		CROSS_COMPILE_ARM32=/home/pzqqt/bin/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabi/bin/arm-linux-gnueabi-
+		CROSS_COMPILE=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu- \
+		CROSS_COMPILE_ARM32=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
 fi
 
 exit_code=$?
