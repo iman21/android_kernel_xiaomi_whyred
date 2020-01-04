@@ -67,8 +67,7 @@ index 16d709cfe081..ee027df3ba13 100644
  		s_ctrl->sensordata->vcm_id_info->data_type);
  		have_vcmid = 1;
  	}
--	
-+
+ 	
 +    if (s_ctrl->sensordata->lens_id_info->lens_id_addr != 0)
 +	{
 +	    msm_camera_cci_i2c_read(
