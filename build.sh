@@ -21,6 +21,19 @@ for arg in $@; do
 		"-40uv") uv_flag=true;;
 		"-80uv") more_uv_flag=true;;
 		"-campatch") campatch_flag=true;;
+		*) {
+        cat <<EOF
+Usage: $0 <operate>
+operate:
+    --noclean   : build without run "make mrproper"
+    --dtbs      : build dtbs only
+    -oc         : build with apply Overclock patch
+    -40uv       : build with apply 40mv UV patch
+    -80uv       : build with apply 80mv UV patch
+    -campatch   : build with apply camera fix patch
+EOF
+        exit 1
+        };;
 	esac
 done
 
@@ -54,21 +67,14 @@ make whyred-perf_defconfig O=out || exit 1
 
 Start=$(date +"%s")
 
-if $mkdtbs; then
-	make dtbs \
-		O=out \
-		CC="${ccache_} ${CLANG_PATH}/bin/clang" \
-		CLANG_TRIPLE=aarch64-linux-gnu- \
-		CROSS_COMPILE=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu- \
-		CROSS_COMPILE_ARM32=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
-else
-	make -j6 \
-		O=out \
-		CC="${ccache_} ${CLANG_PATH}/bin/clang" \
-		CLANG_TRIPLE=aarch64-linux-gnu- \
-		CROSS_COMPILE=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu- \
-		CROSS_COMPILE_ARM32=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
-fi
+$mkdtbs && make_flag="dtbs" || make_flag=""
+
+make $make_flag -j6 \
+	O=out \
+	CC="${ccache_} ${CLANG_PATH}/bin/clang" \
+	CLANG_TRIPLE=aarch64-linux-gnu- \
+	CROSS_COMPILE=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu- \
+	CROSS_COMPILE_ARM32=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
 
 exit_code=$?
 End=$(date +"%s")
