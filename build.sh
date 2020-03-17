@@ -73,6 +73,12 @@ make $make_flag -j6 \
 	O=out \
 	CC="${ccache_} ${CLANG_PATH}/bin/clang" \
 	CLANG_TRIPLE=aarch64-linux-gnu- \
+	LLVM_AR=${CLANG_PATH}/bin/llvm-ar \
+	LLVM_NM=${CLANG_PATH}/bin/llvm-nm \
+	LD=${CLANG_PATH}/bin/ld.lld \
+	OBJCOPY=${CLANG_PATH}/bin/llvm-objcopy \
+	OBJDUMP=${CLANG_PATH}/bin/llvm-objdump \
+	STRIP=${CLANG_PATH}/bin/llvm-strip \
 	CROSS_COMPILE=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu- \
 	CROSS_COMPILE_ARM32=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
 
