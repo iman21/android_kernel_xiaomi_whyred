@@ -53,7 +53,7 @@ export HEADER_ARCH=arm64
 export KBUILD_BUILD_HOST="lenovo"
 export KBUILD_BUILD_USER="pzqqt"
 
-ccache_=`which ccache`
+ccache_=`which ccache` || exit 1
 
 $oc_flag && { git apply ./oc.patch || exit 1; }
 $uv_flag && { git apply ./40mv_uv.patch || exit 1; }
@@ -69,8 +69,8 @@ $mkdtbs && make_flag="dtbs" || make_flag=""
 
 make $make_flag -j6 \
 	O=out \
-	CROSS_COMPILE=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu- \
-	CROSS_COMPILE_ARM32=/home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
+	CROSS_COMPILE="$ccache_ /home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-" \
+	CROSS_COMPILE_ARM32="$ccache_ /home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-"
 
 exit_code=$?
 End=$(date +"%s")
