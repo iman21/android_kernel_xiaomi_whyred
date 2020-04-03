@@ -1087,6 +1087,13 @@ static int fg_get_batt_profile(struct fg_chip *chip)
 		chip->bp.vbatt_full_mv = -EINVAL;
 	}
 
+	rc = of_property_read_u32(profile_node, "qcom,nom-batt-capacity-mah",
+			&chip->bp.nom_cap_uah);
+	if (rc < 0) {
+		pr_err("battery nominal capacity unavailable, rc:%d\n", rc);
+		chip->bp.nom_cap_uah = -EINVAL;
+	}
+
 	data = of_get_property(profile_node, "qcom,fg-profile-data", &len);
 	if (!data) {
 		pr_err("No profile data available\n");
@@ -1408,6 +1415,9 @@ static int fg_load_learned_cap_from_sram(struct fg_chip *chip)
 
 	chip->cl.learned_cc_uah = act_cap_mah * 1000;
 
+#ifdef CONFIG_KERNEL_CUSTOM_E7S
+	chip->cl.learned_cc_uah = (chip->cl.learned_cc_uah > 4000000) ? chip->cl.learned_cc_uah : 4000000;
+#endif
 	if (chip->cl.learned_cc_uah != chip->cl.nom_cap_uah) {
 		if (chip->cl.learned_cc_uah == 0)
 			chip->cl.learned_cc_uah = chip->cl.nom_cap_uah;
@@ -3216,6 +3226,9 @@ done:
 			NOM_CAP_OFFSET, rc);
 	} else {
 		chip->cl.nom_cap_uah = (int)(buf[0] | buf[1] << 8) * 1000;
+#ifdef CONFIG_KERNEL_CUSTOM_E7S
+		chip->cl.nom_cap_uah = (chip->cl.nom_cap_uah > 4000000) ? chip->cl.nom_cap_uah : 4000000;
+#endif
 		rc = fg_load_learned_cap_from_sram(chip);
 		if (rc < 0)
 			pr_err("Error in loading capacity learning data, rc:%d\n",
@@ -3963,7 +3976,10 @@ static int fg_psy_get_property(struct power_supply *psy,
 		rc = fg_get_sram_prop(chip, FG_SRAM_OCV, &pval->intval);
 		break;
 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-		pval->intval = chip->cl.nom_cap_uah;
+		if (-EINVAL != chip->bp.nom_cap_uah)
+			pval->intval = chip->bp.nom_cap_uah * 1000;
+		else
+			pval->intval = chip->cl.nom_cap_uah;
 		break;
 	case POWER_SUPPLY_PROP_RESISTANCE_ID:
 		pval->intval = chip->batt_id_ohms;
@@ -4091,15 +4107,6 @@ static int fg_psy_set_property(struct power_supply *psy,
 		if (rc < 0)
 			pr_err("Error in saving learned_cc_uah, rc=%d\n", rc);
 		break;
-#ifdef CONFIG_KERNEL_CUSTOM_E7S
-	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-		if (pval->intval <= 0 || pval->intval > ((chip->cl.nom_cap_uah > 4000000) ? chip->cl.nom_cap_uah : 4000000)) {
-			pr_err("charge_full_design is out of bounds\n");
-			return -EINVAL;
-		}
-		chip->cl.nom_cap_uah = pval->intval;
-		break;
-#endif
 	case POWER_SUPPLY_PROP_COLD_TEMP:
 		rc = fg_set_jeita_threshold(chip, JEITA_COLD, pval->intval);
 		if (rc < 0) {
@@ -4144,9 +4151,6 @@ static int fg_property_is_writeable(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CC_STEP:
 	case POWER_SUPPLY_PROP_CC_STEP_SEL:
 	case POWER_SUPPLY_PROP_CHARGE_FULL:
-#ifdef CONFIG_KERNEL_CUSTOM_E7S
-	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-#endif
 	case POWER_SUPPLY_PROP_COLD_TEMP:
 	case POWER_SUPPLY_PROP_COOL_TEMP:
 	case POWER_SUPPLY_PROP_WARM_TEMP:
