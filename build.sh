@@ -69,8 +69,8 @@ $mkdtbs && make_flag="dtbs" || make_flag=""
 
 make $make_flag -j6 \
 	O=out \
-	CROSS_COMPILE="$ccache_ /home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-" \
-	CROSS_COMPILE_ARM32="$ccache_ /home/pzqqt/build_toolchain/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-"
+	CROSS_COMPILE="$ccache_ /home/pzqqt/build_toolchain/gcc10-aarch64-linux-gnu/bin/aarch64-linux-gnu-" \
+	CROSS_COMPILE_ARM32="$ccache_ /home/pzqqt/build_toolchain/gcc10-arm-linux-gnueabi/bin/arm-linux-gnueabi-"
 
 exit_code=$?
 End=$(date +"%s")
